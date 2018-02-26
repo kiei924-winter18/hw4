@@ -16,6 +16,7 @@
 //   {this.state.currentIcon && (<Icon size={100} name={this.state.currentIcon} />)} -
 //   note that the Icon component is inside parentheses
 // - Math.round(50.85) => 50
+// - For the forecast, use the high temperatures only
 // - Make life easier by storing the entirety of the .daily.data array that comes back 
 //   from Dark Sky in this.state.forecast, instead of trying to store away the individual
 //   bits and pieces of information
