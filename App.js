@@ -1,12 +1,12 @@
 // KIEI-924 Spring 2018 Homework #4
 // React Native Weather
 
-// Functionality-wise, essentially the same as the jQuery weather application built in 
+// Functionality-wise, essentially the same as the jQuery weather application built in
 // Project #2, without the fade effects, but on mobile!
 
 // HINTS
 // - Built-in "icon" function transforms a Dark Sky icon name into a Font Awesome
-//   icon (yup, Font Awesome works on mobile too, thanks to this awesome open-source 
+//   icon (yup, Font Awesome works on mobile too, thanks to this awesome open-source
 //   project - https://github.com/oblador/react-native-vector-icons)
 // - You use the Font Awesome icon by utilizing the Icon component, like this:
 //   <Icon name="rocket" size={100} color="#000" />. The Icon should live inside a Text
@@ -17,10 +17,10 @@
 //   note that the Icon component is inside parentheses
 // - Math.round(50.85) => 50
 // - For the forecast, use the high temperatures only
-// - Make life easier by storing the entirety of the .daily.data array that comes back 
+// - Make life easier by storing the entirety of the .daily.data array that comes back
 //   from Dark Sky in this.state.forecast, instead of trying to store away the individual
 //   bits and pieces of information
-// - There are styles already written for each component. Use them by adding a "style" 
+// - There are styles already written for each component. Use them by adding a "style"
 //   attribute to each component, e.g. <Text style={styles.currentTemperature}>. See the
 //   styles.js file for the definition of each style.
 // - You'll receive another warning message when looping through the days of the forecast,
@@ -57,7 +57,7 @@ export default class App extends React.Component {
       locationInputText: text
     });
   }
-  
+
   async getWeather() {
     // Event handler for clicking of the "Get weather!" button
     // Calls the geocoding and weather API, get back a location and weather object
@@ -68,7 +68,10 @@ export default class App extends React.Component {
 
     // manipulate state
     this.setState({
-      locationName: response.location
+      locationName: response.location,
+      currentIcon: icon(response.weather.currently.icon),
+      currentTemperature: Math.round(response.weather.currently.temperature),
+      forecast: response.weather.daily.data
     });
   }
 
@@ -80,6 +83,20 @@ export default class App extends React.Component {
     // 3. Forecast (forecastDay, forecastIcon, forecastTemperature)
     let forecast = []; // this will eventually hold the JSX elements for each day
 
+    // loop through the forecast object in state and create JSX for the forecast
+    if (this.state.forecast.length > 0) {
+      for (let i=0; i<5; i++) {
+        forecast.push(
+          <View style={styles.forecastDay} key={i}>
+            <Text style={styles.forecastIcon}>
+              <Icon size={30} name={icon(this.state.forecast[i].icon)} />
+            </Text>
+            <Text style={styles.forecastTemperature}>{Math.round(this.state.forecast[i].temperatureHigh)}</Text>
+          </View>
+        )
+      }
+    }
+
     return (
       <View style={styles.container}>
         <View>
@@ -88,7 +105,12 @@ export default class App extends React.Component {
         </View>
         <View style={styles.currentWeather}>
           {/* Current weather conditions */}
+          <Text style={styles.currentIcon}>
+            {this.state.currentIcon && <Icon name={this.state.currentIcon} size={100} color="#000" />}
+          </Text>
           <Text style={styles.locationText}>{this.state.locationName}</Text>
+          <Text style={styles.currentTemperature}>{this.state.currentTemperature}</Text>
+          <Text style={styles.currentSummary}>{this.state.currentSummary}</Text>
         </View>
         <View style={styles.forecast}>
           {forecast}
